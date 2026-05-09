@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🥛 FazendaApp
 
-## Getting Started
+Plataforma web **mobile-first** para pequenos produtores rurais acompanharem sua produção, despesas e lucro no dia a dia — simples, rápida e pensada para uso no campo.
 
-First, run the development server:
+Na primeira versão, o foco é o **módulo de leite**: registro de ordenhas, controle de despesas e dashboard financeiro claro e objetivo.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Funcionalidades
+
+### Módulo de Leite
+- Registrar ordenhas (manhã ou tarde) com litros produzidos e preço por litro
+- Registrar despesas operacionais (ração, medicamentos, mão de obra, manutenção, outros)
+- Suporte a registros retroativos — escolha qualquer data passada
+- Dashboard semanal com produção, receita, despesas e lucro
+- Gráfico de produção diária
+- Relatórios com visão semanal e mensal: produção, receita vs despesas, lucro e custo por litro
+- Histórico de vendas e despesas em tabela
+
+### Módulos futuros (em breve)
+- Gestão de Suínos
+- Gestão de Galinhas
+
+---
+
+## Tecnologias
+
+| Camada | Tecnologia |
+|---|---|
+| Frontend | [Next.js 14](https://nextjs.org/) (App Router) |
+| Linguagem | TypeScript |
+| Estilização | Tailwind CSS |
+| Ícones | [Lucide React](https://lucide.dev/) |
+| Gráficos | [Recharts](https://recharts.org/) |
+| Autenticação | Firebase Authentication *(em breve)* |
+| Banco de dados | Cloud Firestore *(em breve)* |
+| HTTP Client | Axios *(em breve)* |
+
+---
+
+## Estrutura de Pastas
+
+```
+app/
+├── page.tsx                        # Seleção de módulo (/)
+├── login/
+│   └── page.tsx                    # Login
+└── leite/
+    ├── dashboard/
+    │   └── page.tsx                # Dashboard principal
+    ├── ordenha/
+    │   └── nova/
+    │       └── page.tsx            # Registrar ordenha
+    ├── despesas/
+    │   └── nova/
+    │       └── page.tsx            # Adicionar despesa
+    ├── relatorios/
+    │   └── page.tsx                # Relatórios e gráficos
+    └── ajustes/
+        └── page.tsx                # Ajustes da conta
+
+components/
+├── Layout.tsx                      # Layout base com header e nav
+├── ProductionCharts.tsx            # Gráfico de produção (dashboard)
+└── ReportsCharts.tsx               # Gráficos de relatórios
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Instalação
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/fazendaapp.git
+cd fazendaapp
 
-## Learn More
+# Instale as dependências
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Acesse [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Dependências principais
 
-## Deploy on Vercel
+```bash
+npm install lucide-react recharts
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Rotas
+
+| Rota | Descrição |
+|---|---|
+| `/` | Seleção de módulo de produção |
+| `/login` | Autenticação |
+| `/leite/dashboard` | Dashboard do módulo de leite |
+| `/leite/ordenha/nova` | Registrar nova ordenha |
+| `/leite/despesas/nova` | Adicionar nova despesa |
+| `/leite/relatorios` | Relatórios e análises |
+| `/leite/ajustes` | Ajustes da conta |
+
+---
+
+## Notas de Desenvolvimento
+
+### Gráficos (Recharts + Next.js)
+O `ResponsiveContainer` do Recharts precisa ser montado apenas no browser. Para evitar o erro de `width/height -1`, todos os componentes de gráfico usam um guard de montagem via `useEffect`:
+
+```tsx
+const [mounted, setMounted] = useState(false);
+
+useEffect(() => { setMounted(true) }, []);
+
+if (!mounted) return <div className="h-48 w-full" />;
+```
+
+### Dados mock
+Enquanto o Firebase não está configurado, os dados são mocks locais em cada página. A substituição por chamadas axios está sinalizada com comentários `// TODO` em todos os `handleSubmit`.
+
+### Autenticação
+O Firebase Authentication ainda não está integrado. A tela de login existe mas não possui guard de rota ativo. O middleware de proteção de rotas será adicionado junto com a integração do Firebase.
+
+---
+
+## Próximos Passos
+
+- [ ] Configurar Firebase Authentication
+- [ ] Configurar Cloud Firestore
+- [ ] Integrar API com Axios (substituir mocks)
+- [ ] Implementar middleware de proteção de rotas
+- [ ] Módulo de Suínos
+- [ ] Módulo de Galinhas
